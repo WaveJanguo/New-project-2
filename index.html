@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptMarket | GPT Image 提示词交易站</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#">
+      <span class="brand-mark">P</span>
+      <span>PromptMarket</span>
+    </a>
+    <nav class="topnav" aria-label="主导航">
+      <a href="#explore">探索</a>
+      <a href="#categories">分类</a>
+      <a href="#creator">创作者</a>
+      <a href="#profile">我的</a>
+    </nav>
+    <div class="topbar-actions">
+      <button class="ghost-btn" id="login-btn">登录</button>
+      <button class="solid-btn" id="creator-btn">发布提示词</button>
+    </div>
+  </header>
+
+  <main class="app-layout">
+    <aside class="sidebar" id="categories">
+      <section class="side-panel">
+        <p class="section-kicker">分类</p>
+        <div class="category-list" id="category-list">
+          <button class="category-chip active" data-category="all">全部</button>
+          <button class="category-chip" data-category="portrait">人像写真</button>
+          <button class="category-chip" data-category="product">电商产品</button>
+          <button class="category-chip" data-category="ad">广告创意</button>
+          <button class="category-chip" data-category="poster">海报封面</button>
+          <button class="category-chip" data-category="character">角色设计</button>
+          <button class="category-chip" data-category="ui">UI 社媒</button>
+          <button class="category-chip" data-category="comparison">社区案例</button>
+        </div>
+      </section>
+
+      <section class="side-panel" id="creator">
+        <div class="member-card">
+          <div>
+            <p class="section-kicker">创作者</p>
+            <h2>出售你的提示词</h2>
+            <p>源站收录内容永久免费复制；创作者原创内容可定价出售。</p>
+          </div>
+          <div class="member-stats">
+            <span><strong id="total-count">0</strong>条内容</span>
+            <span><strong>创作者</strong>可入驻</span>
+          </div>
+          <button class="solid-btn wide" id="creator-btn-side">申请入驻</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="content" id="explore">
+      <div class="market-header">
+        <div>
+          <p class="section-kicker">GPT Image Prompts</p>
+          <h1>图片提示词交易库</h1>
+          <p>源站收录提示词永久免费复制；创作者原创提示词支持上架交易。</p>
+        </div>
+        <div class="header-metrics">
+          <span><strong>全部</strong>收录免费</span>
+          <span><strong>创作者</strong>原创交易</span>
+        </div>
+      </div>
+
+      <section class="search-strip" aria-label="搜索与筛选">
+        <label class="search-box">
+          <span>搜索</span>
+          <input id="search-input" type="search" placeholder="提示词、作者、语言">
+        </label>
+        <label>
+          <span>语言</span>
+          <select id="language-filter">
+            <option value="all">全部语言</option>
+            <option value="zh">中文</option>
+            <option value="en">英文</option>
+            <option value="ja">日文</option>
+          </select>
+        </label>
+        <label>
+          <span>权限</span>
+          <select id="access-filter">
+            <option value="all">全部</option>
+            <option value="free">免费收录</option>
+            <option value="paid">创作者付费</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="prompt-grid" id="prompt-grid"></section>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="creator-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-card creator-form-card">
+      <button class="modal-close" id="close-modal" aria-label="关闭">×</button>
+      <p class="section-kicker">创作者发布</p>
+      <h2>上架原创提示词</h2>
+      <p>发布交易内容前需要登录并完成实名认证。</p>
+      <form class="stack-form" id="creator-form">
+        <label>
+          <span>标题</span>
+          <input id="creator-title" type="text" placeholder="例如：电商香水主图提示词包" required>
+        </label>
+        <div class="form-grid">
+          <label>
+            <span>分类</span>
+            <select id="creator-category">
+              <option value="product">电商产品</option>
+              <option value="portrait">人像写真</option>
+              <option value="poster">海报封面</option>
+              <option value="ad">广告创意</option>
+              <option value="character">角色设计</option>
+              <option value="ui">UI 社媒</option>
+            </select>
+          </label>
+          <label>
+            <span>价格</span>
+            <input id="creator-price" type="number" min="1" step="0.1" value="19.9" required>
+          </label>
+        </div>
+        <label>
+          <span>效果图 URL</span>
+          <input id="creator-image" type="url" placeholder="https://..." required>
+        </label>
+        <label>
+          <span>完整提示词</span>
+          <textarea id="creator-prompt" rows="6" placeholder="输入买家购买后可复制的完整提示词" required></textarea>
+        </label>
+        <button class="solid-btn wide" type="submit">提交发布</button>
+      </form>
+      <small>创作者须知：成交后平台会按规则从订单中扣除技术服务费；真实上线需接入账号、支付、结算和审核。</small>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="order-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-order="true"></div>
+    <div class="modal-card">
+      <button class="modal-close" id="close-order" aria-label="关闭">×</button>
+      <p class="section-kicker">订单确认</p>
+      <h2 id="order-title">购买提示词</h2>
+      <div class="order-lines">
+        <span>应付金额 <strong id="order-price">¥0.00</strong></span>
+      </div>
+      <button class="solid-btn wide" id="confirm-order">模拟支付</button>
+      <small>购买后可查看并复制完整创作者提示词。</small>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="auth-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-auth="true"></div>
+    <div class="modal-card">
+      <button class="modal-close" id="close-auth" aria-label="关闭">×</button>
+      <p class="section-kicker">登录 / 注册</p>
+      <h2>进入你的账户</h2>
+      <div class="auth-methods">
+        <button class="ghost-btn auth-provider" data-auth-provider="微信">微信登录</button>
+        <button class="ghost-btn auth-provider" data-auth-provider="抖音">抖音登录</button>
+      </div>
+      <form class="stack-form" id="auth-form">
+        <label>
+          <span>手机号</span>
+          <input id="auth-phone" type="tel" placeholder="输入手机号">
+        </label>
+        <label>
+          <span>邮箱</span>
+          <input id="auth-email" type="email" placeholder="输入邮箱">
+        </label>
+        <label>
+          <span>验证码</span>
+          <input id="auth-code" type="text" placeholder="演示版任意填写">
+        </label>
+        <button class="solid-btn wide" type="submit">登录 / 注册</button>
+      </form>
+      <small>演示版会把登录状态保存在当前浏览器；真实上线需接入短信、邮箱、微信 OAuth 和抖音 OAuth。</small>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="kyc-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-kyc="true"></div>
+    <div class="modal-card">
+      <button class="modal-close" id="close-kyc" aria-label="关闭">×</button>
+      <p class="section-kicker">实名认证</p>
+      <h2>交易前完成实名</h2>
+      <p>购买创作者付费内容或发布交易内容前，需要先完成实名认证。</p>
+      <form class="stack-form" id="kyc-form">
+        <label>
+          <span>真实姓名</span>
+          <input id="kyc-name" type="text" placeholder="请输入真实姓名" required>
+        </label>
+        <label>
+          <span>身份证号</span>
+          <input id="kyc-id" type="text" placeholder="请输入身份证号" required>
+        </label>
+        <label>
+          <span>实名手机号</span>
+          <input id="kyc-phone" type="tel" placeholder="请输入实名手机号" required>
+        </label>
+        <button class="solid-btn wide" type="submit">提交实名</button>
+      </form>
+      <small>演示版仅模拟实名状态；真实上线应接入合规实名认证服务并加密存储敏感信息。</small>
+    </div>
+  </div>
+
+  <div class="modal detail-modal hidden" id="detail-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-detail="true"></div>
+    <article class="detail-card">
+      <button class="modal-close" id="close-detail" aria-label="关闭">×</button>
+      <div class="detail-gallery" id="detail-gallery"></div>
+      <div class="detail-body">
+        <div class="card-labels">
+          <span class="tag" id="detail-category"></span>
+          <span class="tag" id="detail-access"></span>
+          <span class="tag" id="detail-language"></span>
+        </div>
+        <h2 id="detail-title"></h2>
+        <p class="detail-meta" id="detail-meta"></p>
+        <pre id="detail-prompt"></pre>
+        <div class="detail-actions">
+          <a class="ghost-btn detail-source" id="detail-source" href="#" target="_blank" rel="noopener noreferrer">查看来源</a>
+          <button class="solid-btn" id="detail-copy">复制提示词</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <template id="prompt-card-template">
+    <article class="prompt-card">
+      <button class="favorite-btn" aria-label="收藏">♡</button>
+      <div class="card-media">
+        <img class="prompt-image" alt="">
+        <div class="media-placeholder hidden">No Image</div>
+        <div class="locked-overlay hidden">
+          <span>创作者付费</span>
+          <button class="solid-btn small overlay-btn">购买</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-labels">
+          <span class="tag language-tag"></span>
+          <span class="tag access-tag"></span>
+        </div>
+        <h3 class="card-title"></h3>
+        <p class="prompt-text"></p>
+        <div class="card-meta"></div>
+        <div class="card-footer">
+          <span class="author-row"></span>
+          <button class="copy-btn">复制</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="./data/prompts-data.js?v=20260507"></script>
+  <script src="app.js?v=20260507"></script>
+</body>
+</html>
