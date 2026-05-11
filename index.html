@@ -6,7 +6,9 @@
   <title>PromptMarket | GPT Image 提示词交易站</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;800&display=swap" rel="stylesheet"></noscript>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -106,15 +108,14 @@
       <button class="modal-close" id="close-modal" aria-label="关闭">×</button>
       <p class="section-kicker">创作者发布</p>
       <h2>上架原创提示词</h2>
-      <p>发布交易内容前需要登录并完成实名认证。</p>
       <form class="stack-form" id="creator-form">
         <label>
-          <span>标题</span>
+          <span>提示词标题 <em>*</em></span>
           <input id="creator-title" type="text" placeholder="例如：电商香水主图提示词包" required>
         </label>
         <div class="form-grid">
           <label>
-            <span>分类</span>
+            <span>分类 <em>*</em></span>
             <select id="creator-category">
               <option value="product">电商产品</option>
               <option value="portrait">人像写真</option>
@@ -125,21 +126,31 @@
             </select>
           </label>
           <label>
-            <span>价格</span>
+            <span>语言</span>
+            <select id="creator-lang">
+              <option value="zh">中文</option>
+              <option value="en">英文</option>
+              <option value="ja">日文</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid">
+          <label>
+            <span>售价（元）<em>*</em></span>
             <input id="creator-price" type="number" min="1" step="0.1" value="19.9" required>
+          </label>
+          <label>
+            <span>效果图链接 <em>*</em></span>
+            <input id="creator-image" type="url" placeholder="https://图片地址" required>
           </label>
         </div>
         <label>
-          <span>效果图 URL</span>
-          <input id="creator-image" type="url" placeholder="https://..." required>
+          <span>完整提示词 <em>*</em></span>
+          <textarea id="creator-prompt" rows="5" placeholder="买家付款后可见的完整提示词内容" required></textarea>
         </label>
-        <label>
-          <span>完整提示词</span>
-          <textarea id="creator-prompt" rows="6" placeholder="输入买家购买后可复制的完整提示词" required></textarea>
-        </label>
-        <button class="solid-btn wide" type="submit">提交发布</button>
+        <button class="solid-btn wide" type="submit">✦ 提交发布</button>
       </form>
-      <small>创作者须知：成交后平台会按规则从订单中扣除技术服务费；真实上线需接入账号、支付、结算和审核。</small>
+      <p class="creator-tip">📌 成交后平台收取 10% 技术服务费，其余收益归创作者所有</p>
     </div>
   </div>
 
@@ -159,30 +170,32 @@
 
   <div class="modal hidden" id="auth-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-auth="true"></div>
-    <div class="modal-card">
+    <div class="modal-card auth-modal-card">
       <button class="modal-close" id="close-auth" aria-label="关闭">×</button>
       <p class="section-kicker">登录 / 注册</p>
-      <h2>进入你的账户</h2>
+      <h2>欢迎来到 PromptMarket</h2>
+      <p class="auth-subtitle">登录后可收藏提示词、发布原创内容</p>
       <div class="auth-methods">
-        <button class="ghost-btn auth-provider" data-auth-provider="微信">微信登录</button>
-        <button class="ghost-btn auth-provider" data-auth-provider="抖音">抖音登录</button>
+        <button class="auth-provider-btn auth-provider" data-auth-provider="微信">🟢 微信一键登录</button>
+        <button class="auth-provider-btn auth-provider secondary" data-auth-provider="抖音">⚫ 抖音一键登录</button>
       </div>
+      <div class="auth-divider"><span>或使用手机号 / 邮箱</span></div>
       <form class="stack-form" id="auth-form">
         <label>
-          <span>手机号</span>
-          <input id="auth-phone" type="tel" placeholder="输入手机号">
+          <span>手机号 / 邮箱</span>
+          <input id="auth-phone" type="text" placeholder="输入手机号或邮箱地址">
         </label>
-        <label>
-          <span>邮箱</span>
-          <input id="auth-email" type="email" placeholder="输入邮箱">
-        </label>
+        <input id="auth-email" type="hidden">
         <label>
           <span>验证码</span>
-          <input id="auth-code" type="text" placeholder="演示版任意填写">
+          <div class="input-with-action">
+            <input id="auth-code" type="text" placeholder="输入验证码（演示版任意填）">
+            <button type="button" class="send-code-btn" id="send-code-btn">获取验证码</button>
+          </div>
         </label>
         <button class="solid-btn wide" type="submit">登录 / 注册</button>
       </form>
-      <small>演示版会把登录状态保存在当前浏览器；真实上线需接入短信、邮箱、微信 OAuth 和抖音 OAuth。</small>
+      <p class="auth-tip">注册即代表同意 <a href="#">服务条款</a> 与 <a href="#">隐私政策</a></p>
     </div>
   </div>
 
@@ -227,7 +240,6 @@
         <p class="detail-meta" id="detail-meta"></p>
         <pre id="detail-prompt"></pre>
         <div class="detail-actions">
-          <a class="ghost-btn detail-source" id="detail-source" href="#" target="_blank" rel="noopener noreferrer">查看来源</a>
           <button class="solid-btn" id="detail-copy">复制提示词</button>
         </div>
       </div>

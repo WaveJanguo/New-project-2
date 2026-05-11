@@ -695,3 +695,156 @@ select:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== 登录弹窗优化 ===== */
+.auth-modal-card {
+  padding: 28px;
+}
+
+.auth-subtitle {
+  margin: 4px 0 20px !important;
+  font-size: 14px;
+}
+
+.auth-methods {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.auth-provider-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: #07c160;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+
+.auth-provider-btn:hover {
+  opacity: 0.88;
+}
+
+.auth-provider-btn.secondary {
+  background: #1a1a1a;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.input-with-action {
+  display: flex;
+  gap: 8px;
+}
+
+.input-with-action input {
+  flex: 1;
+}
+
+.send-code-btn {
+  min-width: 100px;
+  min-height: 42px;
+  border: 1.5px solid var(--accent);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+
+.send-code-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.auth-tip {
+  margin: 12px 0 0 !important;
+  font-size: 12px;
+  text-align: center;
+  color: var(--muted) !important;
+}
+
+.auth-tip a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ===== 发布弹窗优化 ===== */
+.creator-form-card {
+  width: min(520px, calc(100% - 28px));
+}
+
+.stack-form em {
+  color: var(--danger);
+  font-style: normal;
+}
+
+.creator-tip {
+  margin: 14px 0 0 !important;
+  font-size: 13px;
+  color: var(--muted) !important;
+  padding: 10px 14px;
+  background: var(--surface-muted);
+  border-radius: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stack-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.stack-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.stack-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--text);
+  resize: vertical;
+  outline: none;
+  line-height: 1.65;
+}
+
+.stack-form textarea:focus {
+  border-color: var(--accent);
+}

@@ -28,7 +28,7 @@ const detailModal = document.getElementById("detail-modal");
 const template = document.getElementById("prompt-card-template");
 
 bind("creator-btn", "click", beginCreatorPublish);
-bind("creator-btn-side", "click", beginCreatorPublish);
+bind("creator-btn-side", "click", beginCreatorApply);
 bind("creator-form", "submit", submitCreatorPrompt);
 bind("auth-form", "submit", submitAuth);
 bind("kyc-form", "submit", submitKyc);
@@ -252,12 +252,7 @@ function requireLoginAndKyc(action) {
     return false;
   }
 
-  if (!state.kyc?.verified) {
-    openKycModal();
-    showToast("交易前需要完成实名认证");
-    return false;
-  }
-
+  // 实名认证暂未上线，跳过 KYC 检查
   return true;
 }
 
@@ -603,6 +598,17 @@ function getCategoryLabel(category) {
   };
 
   return labels[category] || "精选";
+}
+
+function beginCreatorApply() {
+  if (!state.user) {
+    state.pendingAction = () => {
+      showToast("🎉 入驻成功！现在可以发布你的提示词了");
+    };
+    openAuthModal();
+    return;
+  }
+  showToast("🎉 你已是创作者，点击「发布提示词」上架内容");
 }
 
 function inferCategory(text, index) {
