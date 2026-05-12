@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PromptMarket | GPT Image 提示词交易站</title>
+  <title>PromptMarket | AI 图片提示词交易平台</title>
+  <meta name="description" content="发现、收藏和交易高质量 AI 图片生成提示词，支持创作者原创上架。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;800&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;800&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700;800;900&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700;800;900&display=swap" rel="stylesheet"></noscript>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <header class="topbar">
     <a class="brand" href="#">
       <span class="brand-mark">P</span>
@@ -32,9 +34,9 @@
   <main class="app-layout">
     <aside class="sidebar" id="categories">
       <section class="side-panel">
-        <p class="section-kicker">分类</p>
+        <p class="section-kicker">分类浏览</p>
         <div class="category-list" id="category-list">
-          <button class="category-chip active" data-category="all">全部</button>
+          <button class="category-chip active" data-category="all">全部内容</button>
           <button class="category-chip" data-category="portrait">人像写真</button>
           <button class="category-chip" data-category="product">电商产品</button>
           <button class="category-chip" data-category="ad">广告创意</button>
@@ -48,13 +50,13 @@
       <section class="side-panel" id="creator">
         <div class="member-card">
           <div>
-            <p class="section-kicker">创作者</p>
+            <p class="section-kicker">创作者计划</p>
             <h2>出售你的提示词</h2>
-            <p>源站收录内容永久免费复制；创作者原创内容可定价出售。</p>
+            <p>源站内容免费复制，创作者原创内容可定价出售，收益实时结算。</p>
           </div>
           <div class="member-stats">
             <span><strong id="total-count">0</strong>条内容</span>
-            <span><strong>创作者</strong>可入驻</span>
+            <span><strong>开放</strong>创作者入驻</span>
           </div>
           <button class="solid-btn wide" id="creator-btn-side">申请入驻</button>
         </div>
@@ -66,10 +68,10 @@
         <div>
           <p class="section-kicker">GPT Image Prompts</p>
           <h1>图片提示词交易库</h1>
-          <p>源站收录提示词永久免费复制；创作者原创提示词支持上架交易。</p>
+          <p>收录全网优质提示词，支持创作者原创上架交易</p>
         </div>
         <div class="header-metrics">
-          <span><strong>全部</strong>收录免费</span>
+          <span><strong>免费</strong>收录复制</span>
           <span><strong>创作者</strong>原创交易</span>
         </div>
       </div>
@@ -77,7 +79,7 @@
       <section class="search-strip" aria-label="搜索与筛选">
         <label class="search-box">
           <span>搜索</span>
-          <input id="search-input" type="search" placeholder="提示词、作者、语言">
+          <input id="search-input" type="search" placeholder="搜索提示词、作者、语言...">
         </label>
         <label>
           <span>语言</span>
@@ -102,6 +104,7 @@
     </section>
   </main>
 
+  <!-- 发布提示词弹窗 -->
   <div class="modal hidden" id="creator-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-modal="true"></div>
     <div class="modal-card creator-form-card">
@@ -148,79 +151,72 @@
           <span>完整提示词 <em>*</em></span>
           <textarea id="creator-prompt" rows="5" placeholder="买家付款后可见的完整提示词内容" required></textarea>
         </label>
-        <button class="solid-btn wide" type="submit">✦ 提交发布</button>
+        <button class="solid-btn wide" type="submit">提交发布</button>
       </form>
-      <p class="creator-tip">📌 成交后平台收取 10% 技术服务费，其余收益归创作者所有</p>
+      <p class="creator-tip">成交后平台收取 5% 技术服务费，其余收益 T+2 结算至您的账户</p>
     </div>
   </div>
 
+  <!-- 购买弹窗 -->
   <div class="modal hidden" id="order-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-order="true"></div>
     <div class="modal-card">
       <button class="modal-close" id="close-order" aria-label="关闭">×</button>
-      <p class="section-kicker">订单确认</p>
+      <p class="section-kicker">确认订单</p>
       <h2 id="order-title">购买提示词</h2>
       <div class="order-lines">
         <span>应付金额 <strong id="order-price">¥0.00</strong></span>
       </div>
-      <button class="solid-btn wide" id="confirm-order">模拟支付</button>
-      <small>购买后可查看并复制完整创作者提示词。</small>
+      <button class="solid-btn wide" id="confirm-order">立即支付</button>
+      <small>购买后即可查看并复制完整创作者提示词内容。</small>
     </div>
   </div>
 
+  <!-- 登录/注册弹窗 -->
   <div class="modal hidden" id="auth-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-auth="true"></div>
-    <div class="modal-card auth-modal-card">
+    <div class="modal-card">
       <button class="modal-close" id="close-auth" aria-label="关闭">×</button>
-      <p class="section-kicker">登录 / 注册</p>
+      <p class="section-kicker">账户</p>
       <h2>欢迎来到 PromptMarket</h2>
-      <p class="auth-subtitle">登录后可收藏提示词、发布原创内容</p>
+      <p class="auth-subtitle">登录后可收藏提示词、发布原创内容并参与交易</p>
       <form class="stack-form" id="auth-form">
         <label>
           <span>用户名 / 手机号 / 邮箱</span>
-          <input id="auth-phone" type="text" placeholder="请输入用户名、手机号或邮箱" required>
+          <input id="auth-phone" type="text" placeholder="输入用户名、手机号或邮箱" required>
         </label>
         <input id="auth-email" type="hidden">
         <label>
           <span>密码</span>
-          <input id="auth-password" type="password" placeholder="请设置或输入密码（6位以上）" required>
+          <input id="auth-password" type="password" placeholder="设置或输入登录密码（6位以上）" required>
         </label>
         <label class="auth-agree-label">
           <input id="auth-agree" type="checkbox">
-          <span>我已阅读并同意 <a href="#" target="_blank">用户协议</a> 与 <a href="#" target="_blank">隐私政策</a></span>
+          <span>我已阅读并同意 <a href="/terms.html" target="_blank">用户协议</a> 与 <a href="/privacy.html" target="_blank">隐私政策</a></span>
         </label>
         <button class="solid-btn wide" type="submit">登录 / 注册</button>
       </form>
-      <p class="auth-tip">没有账号？填写后自动注册</p>
+      <p class="auth-tip">没有账号？填写即自动注册</p>
     </div>
   </div>
 
+  <!-- 实名认证弹窗（暂不展示） -->
   <div class="modal hidden" id="kyc-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-kyc="true"></div>
     <div class="modal-card">
       <button class="modal-close" id="close-kyc" aria-label="关闭">×</button>
       <p class="section-kicker">实名认证</p>
-      <h2>交易前完成实名</h2>
-      <p>购买创作者付费内容或发布交易内容前，需要先完成实名认证。</p>
+      <h2>完成实名认证</h2>
       <form class="stack-form" id="kyc-form">
-        <label>
-          <span>真实姓名</span>
-          <input id="kyc-name" type="text" placeholder="请输入真实姓名" required>
-        </label>
-        <label>
-          <span>身份证号</span>
-          <input id="kyc-id" type="text" placeholder="请输入身份证号" required>
-        </label>
-        <label>
-          <span>实名手机号</span>
-          <input id="kyc-phone" type="tel" placeholder="请输入实名手机号" required>
-        </label>
-        <button class="solid-btn wide" type="submit">提交实名</button>
+        <label><span>真实姓名</span><input id="kyc-name" type="text" placeholder="请输入真实姓名" required></label>
+        <label><span>身份证号</span><input id="kyc-id" type="text" placeholder="请输入身份证号" required></label>
+        <label><span>实名手机号</span><input id="kyc-phone" type="tel" placeholder="请输入手机号" required></label>
+        <button class="solid-btn wide" type="submit">提交认证</button>
       </form>
-      <small>演示版仅模拟实名状态；真实上线应接入合规实名认证服务并加密存储敏感信息。</small>
     </div>
   </div>
 
+  <!-- 详情弹窗 -->
   <div class="modal detail-modal hidden" id="detail-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-detail="true"></div>
     <article class="detail-card">
@@ -242,15 +238,16 @@
     </article>
   </div>
 
+  <!-- 卡片模板 -->
   <template id="prompt-card-template">
     <article class="prompt-card">
       <button class="favorite-btn" aria-label="收藏">♡</button>
       <div class="card-media">
-        <img class="prompt-image" alt="">
-        <div class="media-placeholder hidden">No Image</div>
+        <img class="prompt-image" alt="" loading="lazy">
+        <div class="media-placeholder hidden">暂无图片</div>
         <div class="locked-overlay hidden">
-          <span>创作者付费</span>
-          <button class="solid-btn small overlay-btn">购买</button>
+          <span>创作者付费内容</span>
+          <button class="solid-btn small overlay-btn">查看购买</button>
         </div>
       </div>
       <div class="card-body">
@@ -269,7 +266,7 @@
     </article>
   </template>
 
-  <script src="./data/prompts-data.js?v=20260507"></script>
-  <script src="app.js?v=20260507"></script>
+  <script src="./data/prompts-data.js?v=20260512"></script>
+  <script src="app.js?v=20260512"></script>
 </body>
 </html>
