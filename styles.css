@@ -848,3 +848,29 @@ select:focus {
 .stack-form textarea:focus {
   border-color: var(--accent);
 }
+
+/* 协议勾选框 */
+.auth-agree-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: normal !important;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.auth-agree-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.auth-agree-label a {
+  color: var(--accent);
+  text-decoration: none;
+}

@@ -365,23 +365,26 @@ function closeKycModal() {
 
 async function submitAuth(event) {
   event.preventDefault();
-  const phone = document.getElementById("auth-phone").value.trim();
-  if (!phone) {
-    showToast("请填写手机号或邮箱");
-    return;
-  }
+  const account = document.getElementById("auth-phone").value.trim();
+  const password = document.getElementById("auth-password").value.trim();
+  const agreed = document.getElementById("auth-agree")?.checked;
+
+  if (!account) { showToast("请填写用户名/手机号/邮箱"); return; }
+  if (!password) { showToast("请填写密码"); return; }
+  if (!agreed) { showToast("请先阅读并同意用户协议"); return; }
+
   try {
     const btn = event.target.querySelector('button[type="submit"]');
     if (btn) btn.textContent = '登录中...';
     const data = await api('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ phone }),
+      body: JSON.stringify({ phone: account, password }),
     });
     state.user = {
       id: data.user.id,
       nickname: data.user.username,
       token: data.token,
-      phone,
+      phone: account,
     };
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(state.user));
     closeAuthModal();
@@ -393,6 +396,8 @@ async function submitAuth(event) {
     }
   } catch (err) {
     showToast(err.message || "登录失败，请重试");
+    const btn = event.target.querySelector('button[type="submit"]');
+    if (btn) btn.textContent = '登录 / 注册';
   }
 }
 
