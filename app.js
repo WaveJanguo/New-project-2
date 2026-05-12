@@ -1,7 +1,26 @@
+const API_BASE = 'https://aippmk.cn/api';
 const PLATFORM_FEE_RATE = 0.1;
 const FAVORITES_STORAGE_KEY = "gpt-image-favorites";
 const USER_STORAGE_KEY = "promptmarket-user";
 const KYC_STORAGE_KEY = "promptmarket-kyc";
+
+// API 请求封装
+async function api(path, options = {}) {
+  const token = state?.user?.token;
+  const res = await fetch(API_BASE + path, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: 'Bearer ' + token } : {}),
+      ...options.headers,
+    },
+    ...options,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || '请求失败');
+  return data;
+}
+
+
 
 const state = {
   prompts: [],
@@ -344,31 +363,36 @@ function closeKycModal() {
   kycModal.setAttribute("aria-hidden", "true");
 }
 
-function submitAuth(event) {
+async function submitAuth(event) {
   event.preventDefault();
   const phone = document.getElementById("auth-phone").value.trim();
-  const email = document.getElementById("auth-email").value.trim();
-
-  if (!phone && !email) {
+  if (!phone) {
     showToast("请填写手机号或邮箱");
     return;
   }
-
-  state.user = {
-    id: `user-${Date.now()}`,
-    nickname: phone || email.split("@")[0],
-    provider: phone ? "手机号" : "邮箱",
-    phone,
-    email,
-  };
-  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(state.user));
-  closeAuthModal();
-  updateUserUi();
-
-  if (state.pendingAction) {
-    requireLoginAndKyc(state.pendingAction);
-  } else {
-    showToast("登录成功");
+  try {
+    const btn = event.target.querySelector('button[type="submit"]');
+    if (btn) btn.textContent = '登录中...';
+    const data = await api('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ phone }),
+    });
+    state.user = {
+      id: data.user.id,
+      nickname: data.user.username,
+      token: data.token,
+      phone,
+    };
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(state.user));
+    closeAuthModal();
+    updateUserUi();
+    if (state.pendingAction) {
+      requireLoginAndKyc(state.pendingAction);
+    } else {
+      showToast("登录成功 🎉");
+    }
+  } catch (err) {
+    showToast(err.message || "登录失败，请重试");
   }
 }
 
@@ -499,7 +523,7 @@ function confirmOrder() {
   showToast("模拟支付成功，已解锁创作者提示词");
 }
 
-function submitCreatorPrompt(event) {
+async function submitCreatorPrompt(event) {
   event.preventDefault();
 
   if (!requireLoginAndKyc(openCreatorModal)) {
@@ -508,6 +532,7 @@ function submitCreatorPrompt(event) {
 
   const title = document.getElementById("creator-title").value.trim();
   const category = document.getElementById("creator-category").value;
+  const language = document.getElementById("creator-lang")?.value || "zh";
   const price = Number(document.getElementById("creator-price").value || 0);
   const imageUrl = document.getElementById("creator-image").value.trim();
   const text = document.getElementById("creator-prompt").value.trim();
@@ -517,36 +542,30 @@ function submitCreatorPrompt(event) {
     return;
   }
 
-  const prompt = {
-    id: `creator-${Date.now()}`,
-    caseNumber: `C${state.prompts.length + 1}`,
-    url: "#creator",
-    author: state.user.nickname,
-    title,
-    category,
-    lang: /[\u4e00-\u9fff]/.test(text) ? "zh" : "en",
-    rank: state.prompts.length + 1,
-    accessType: "paid",
-    price,
-    text,
-    viewCount: 0,
-    media: [{
-      type: "photo",
-      url: imageUrl,
-      width: 0,
-      height: 0,
-    }],
-    sourceFile: "creator/submission",
-    sourceRepo: "PromptMarket",
-    image: imageUrl,
-  };
+  try {
+    const btn = event.target.querySelector('button[type="submit"]');
+    if (btn) btn.textContent = '提交中...';
 
-  state.prompts = [prompt, ...state.prompts];
-  totalCount.textContent = String(state.prompts.length);
-  closeCreatorModal();
-  event.target.reset();
-  applyFilters();
-  showToast("发布成功，已生成付费提示词卡片");
+    await api('/prompts', {
+      method: 'POST',
+      body: JSON.stringify({
+        title,
+        category,
+        language,
+        price,
+        image_url: imageUrl,
+        content: text,
+      }),
+    });
+
+    closeCreatorModal();
+    event.target.reset();
+    showToast("提交成功！审核通过后将公开展示 ✅");
+  } catch (err) {
+    showToast(err.message || "发布失败，请重试");
+    const btn = event.target.querySelector('button[type="submit"]');
+    if (btn) btn.textContent = '✦ 提交发布';
+  }
 }
 
 function confirmCreatorApply() {
